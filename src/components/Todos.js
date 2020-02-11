@@ -23,14 +23,15 @@ const Todos = () => {
                     }
                     }>Add</button>
                 </div>
-            </div>
-            <ul >
+            </div >
+            <ul class= "listHolder">
                 {todos.map(todo => (
                     <li key = {todo.ind}>
                         {todo}
                     </li>
                 ))}
             </ul>
+                <p class= "itemcounter">{todos.length} Items</p>
         </div>
     );
 }

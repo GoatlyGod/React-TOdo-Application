@@ -1,12 +1,12 @@
 body {
-  background-color: blanchedalmond;
+  background-color: rgb(77, 55, 23);
 }
 .bigbox{
   width: 60%;
   height: auto;
   margin: auto;
-  background-color: chocolate;
-  border-radius: 5px;
+  background-color: whitesmoke;
+  border-radius: 10px;
   margin-top: 60px;
   text-align: center;
   padding-top: 10px;
@@ -18,4 +18,19 @@ body {
 }
 .btn{
   margin-left: 15px;
+}
+.listHolder{
+  background-color: whitesmoke;
+  border-radius: 10px;
+  list-style: none;
+}
+li {
+  margin-bottom: 2px;
+  text-align: left;
+  margin-left: 5px;
+  border-bottom: 5px black;
+}
+.itemcounter{
+  text-align: left;
+  margin-left: 30px;
 }
