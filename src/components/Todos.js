@@ -6,6 +6,14 @@ import '../../src/App.css';
 const Todos = () => {
     const [todos, setTodos] = useState([]);
     const [inputValue, setInputValue]= useState('');
+    const deleteTodos = indexToDelete => {
+        console.log(indexToDelete);
+        setTodos(prevTodos => {
+            return prevTodos.filter((value, index) => {
+                return indexToDelete !== index;
+            })
+        })
+    }
     
 
     console.log(todos);
@@ -21,15 +29,19 @@ const Todos = () => {
                         setTodos(prevTodos => [...prevTodos, inputValue])
                         setInputValue("")
                     }
-                    }>Add</button>
+                    }
+                    >Add</button>
                 </div>
             </div >
             <ul class= "listHolder">
-                {todos.map(todo => (
-                    <li key = {todo.ind}>
-                        {todo}
+            {todos.map((value, index) => {
+                    return <li className="Kidd list-group-item d-flex justify-content-between align-items-center" key={index}>{value}
+                        <span type="button" onClick={() => {
+                            deleteTodos(index);
+                        }}
+                        >x</span>
                     </li>
-                ))}
+                })}
             </ul>
                 <p class= "itemcounter">{todos.length} Items</p>
         </div>
