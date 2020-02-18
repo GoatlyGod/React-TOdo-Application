@@ -1,11 +1,44 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import '../../src/App.css';
 
 
+const url = 'https://assets.breatheco.de/apis/fake/todos/user/GoatlyGod'
 
 const Todos = () => {
     const [todos, setTodos] = useState([]);
     const [inputValue, setInputValue]= useState('');
+
+    useEffect(() => {
+        // Making GET request, testing is user exits
+        fetch(url)
+          .then(res => res.json())
+          .then(res => {
+            console.log("response: " + JSON.stringify(res));
+            // if user does not exist, we get a "msg"
+            if (res.msg) {
+              // If user does not exists, we'll create it
+              console.log("user does not exists");
+              fetch(url, {
+                method: "POST",
+                body: JSON.stringify([{}]),
+                headers: { "Content-Type": "application/json" }
+              })
+                .then(res => res.json())
+                .then(res => console.log(res))
+                .catch(err => console.log(`error: ${err}`));
+            } else {
+              console.log("user exists, here is response: " + JSON.stringify(res));
+            }
+          })
+          .catch(err => console.log(`error: ${err}`));
+      }, [todos]);
+    
+
+    const addTodo = newTodoFromInput => {
+        if (newTodoFromInput){
+            setTodos(prevTodos => [...prevTodos, newTodoFromInput]);
+        }
+    };
     const deleteTodos = indexToDelete => {
         console.log(indexToDelete);
         setTodos(prevTodos => {
@@ -16,7 +49,7 @@ const Todos = () => {
     }
     
 
-    console.log(todos);
+    
 
 
     return (
