@@ -6,37 +6,71 @@ const url = 'https://assets.breatheco.de/apis/fake/todos/user/GoatlyGod'
 
 const Todos = () => {
     const [todos, setTodos] = useState([]);
+    const [init, setInit] = useState([true])
     const [inputValue, setInputValue]= useState('');
 
     useEffect(() => {
+        const fetchGetTodos = () => {
+            return fetch(url)
+            .then(res => res.json())
+            .then(res => {
+                return res
+            })
+            .catch(err => console.log('error:'+err))
+        }
+        const fetchCreateUser = () => {
+            return fetch(url,{
+                method: 'POST',
+                body: JSON.stringify([{}]),
+                headers: {'Content.Type':'application/json'}
+            })
+            .then(res => res.json())
+            .then(res => {
+                return res
+            })
+            .catch(err => console.log('error:'+err))
+        }
+        const fetchUpdateTodos = () => {
+            const todosData = todos.map(todo => {
+                return {label: 'todo',done: false}
+            })
+            return fetch(url,{
+                method: 'PUT',
+                body: JSON.stringify(todosData),
+                headers: {'Content.Type':'application/json'}
+            })
+            .then(res => res.json())
+            .then(res => {
+                return res
+            })
+            .catch(err => console.log('error:'+err))
+        }
+
         // Making GET request, testing is user exits
-        fetch(url)
-          .then(res => res.json())
+        if(init === true) {
+            fetchGetTodos()
           .then(res => {
             console.log("response: " + JSON.stringify(res));
             // if user does not exist, we get a "msg"
             if (res.msg) {
               // If user does not exists, we'll create it
               console.log("user does not exists");
-              fetch(url, {
-                method: "POST",
-                body: JSON.stringify([{}]),
-                headers: { "Content-Type": "application/json" }
-              })
-                .then(res => res.json())
-                .then(res => console.log(res))
-                .catch(err => console.log(`error: ${err}`));
+              fetchCreateUser()
+                .then(res => console.log())
             } else {
               console.log("user exists, here is response: " + JSON.stringify(res));
+                setTodos(res.map(todo => todo.label)) 
             }
           })
-          .catch(err => console.log(`error: ${err}`));
+        }
+        
       }, [todos]);
     
 
     const addTodo = newTodoFromInput => {
         if (newTodoFromInput){
             setTodos(prevTodos => [...prevTodos, newTodoFromInput]);
+            setInputValue("")
         }
     };
     const deleteTodos = indexToDelete => {
@@ -59,8 +93,7 @@ const Todos = () => {
                 <input type="text" className="form-control" placeholder="Add new todo" aria-label="Add new todo" name={inputValue} value={inputValue} onChange={e => setInputValue(e.target.value)} aria-describedby="button-addon2"></input>
                 <div className="input-group-append">
                     <button className="btn btn-success" type="button" onClick={() => {
-                        setTodos(prevTodos => [...prevTodos, inputValue])
-                        setInputValue("")
+                        addTodo(inputValue)
                     }
                     }
                     >Add</button>
