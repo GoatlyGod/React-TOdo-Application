@@ -7,7 +7,7 @@ const url = 'https://assets.breatheco.de/apis/fake/todos/user/GoatlyGod'
 
 const Todos = () => {
     const [todos, setTodos] = useState([]);
-    const [init, setInit] = useState([true])
+    const [init, setInit] = useState([true]);
     const [inputValue, setInputValue]= useState('');
 
     useEffect(() => {
@@ -15,25 +15,25 @@ const Todos = () => {
             return fetch(url)
             .then(res => res.json())
             .then(res => {
-                return res
+                return res;
             })
-            .catch(err => console.log('error:'+err))
+            .catch(err => console.log('error:'+err));
         }
         const fetchCreateUser = () => {
             return fetch(url,{
                 method: 'POST',
-                body: JSON.stringify([{}]),
+                body: JSON.stringify([]),
                 headers: {'Content-Type':'application/json'}
             })
             .then(res => res.json())
             .then(res => {
-                return res
+                return res;
             })
-            .catch(err => console.log('error:'+err))
-        }
+            .catch(err => console.log('error:'+err));
+        };
         const fetchUpdateTodos = () => {
             const todosData = todos.map(todo => {
-                return {label: 'todo',done: false}
+                return {label: 'todo',done: false};
             });
             return fetch(url,{
                 method: 'PUT',
@@ -42,9 +42,9 @@ const Todos = () => {
             })
             .then(res => res.json())
             .then(res => {
-                return res
+                return res;
             })
-            .catch(err => console.log('error:'+err))
+            .catch(err => console.log('error:'+err));
         };
 
         // Making GET request, testing is user exits
@@ -59,7 +59,7 @@ const Todos = () => {
                 fetchGetTodos(url).then(res =>
                 setTodos(res.map(todo => todo.label))
                 );
-                setInit(false)
+                setInit(false);
             });
             } else {
                 setTodos(res.map(todo => todo.label));
