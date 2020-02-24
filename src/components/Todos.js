@@ -1,6 +1,7 @@
 import React,{useState, useEffect} from 'react';
 import '../../src/App.css';
 
+//export default Todos;
 
 const url = 'https://assets.breatheco.de/apis/fake/todos/user/GoatlyGod'
 
@@ -22,7 +23,7 @@ const Todos = () => {
             return fetch(url,{
                 method: 'POST',
                 body: JSON.stringify([{}]),
-                headers: {'Content.Type':'application/json'}
+                headers: {'Content-Type':'application/json'}
             })
             .then(res => res.json())
             .then(res => {
@@ -33,85 +34,108 @@ const Todos = () => {
         const fetchUpdateTodos = () => {
             const todosData = todos.map(todo => {
                 return {label: 'todo',done: false}
-            })
+            });
             return fetch(url,{
                 method: 'PUT',
                 body: JSON.stringify(todosData),
-                headers: {'Content.Type':'application/json'}
+                headers: {'Content-Type':'application/json'}
             })
             .then(res => res.json())
             .then(res => {
                 return res
             })
             .catch(err => console.log('error:'+err))
-        }
+        };
 
         // Making GET request, testing is user exits
         if(init === true) {
-            fetchGetTodos()
-          .then(res => {
+            fetchGetTodos().then(res => {
             console.log("response: " + JSON.stringify(res));
             // if user does not exist, we get a "msg"
             if (res.msg) {
               // If user does not exists, we'll create it
               console.log("user does not exists");
-              fetchCreateUser()
-                .then(res => console.log())
+              fetchCreateUser().then(() => {
+                fetchGetTodos(url).then(res =>
+                setTodos(res.map(todo => todo.label))
+                );
+                setInit(false)
+            });
             } else {
-              console.log("user exists, here is response: " + JSON.stringify(res));
-                setTodos(res.map(todo => todo.label)) 
+                setTodos(res.map(todo => todo.label));
+                setInit(false);
             }
-          })
-        }
-        
-      }, [todos]);
-    
+              });           
+             } else {
+                fetchUpdateTodos();
+            }
+          }, [todos, init]);
 
-    const addTodo = newTodoFromInput => {
-        if (newTodoFromInput){
-            setTodos(prevTodos => [...prevTodos, newTodoFromInput]);
-            setInputValue("")
-        }
-    };
-    const deleteTodos = indexToDelete => {
-        console.log(indexToDelete);
-        setTodos(prevTodos => {
-            return prevTodos.filter((value, index) => {
+          console.log(todos);
+
+          const deleteTodo = indexToDelete => {
+            setTodos(prevTodos => {
+              return prevTodos.filter((value, index) => {
                 return indexToDelete !== index;
-            })
-        })
-    }
-    
+              });
+            });
+          };
+           
 
-    
-
-
-    return (
-        <div class="bigbox">
-                <h1>My TO DO LIST</h1>
-            <div className="inputbar input-group mb-3">
-                <input type="text" className="form-control" placeholder="Add new todo" aria-label="Add new todo" name={inputValue} value={inputValue} onChange={e => setInputValue(e.target.value)} aria-describedby="button-addon2"></input>
+          return (
+            <div className="Todo">
+              <h1 className="Font">
+                <b>My Todo List</b>
+              </h1>
+        
+              <div className=" Todo2 input-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter new todo"
+                  aria-label="Enter new todo"
+                  aria-describedby="button-addon2"
+                  name={inputValue}
+                  value={inputValue}
+                  onChange={e => setInputValue(e.target.value)}
+                />
                 <div className="input-group-append">
-                    <button className="btn btn-success" type="button" onClick={() => {
-                        addTodo(inputValue)
-                    }
-                    }
-                    >Add</button>
+                  <button
+                    className="btn btn-secondary"
+                    type="button"
+                    onClick={() => {
+                      setTodos(prevTodos => [...prevTodos, inputValue]);
+                      setInputValue("");
+                    }}
+                  >
+                    Add
+                  </button>
                 </div>
-            </div >
-            <ul class= "listHolder">
-            {todos.map((value, index) => {
-                    return <li className="Kidd list-group-item d-flex justify-content-between align-items-center" key={index}>{value}
-                        <span type="button" onClick={() => {
-                            deleteTodos(index);
+              </div>
+              <ul className="list-group">
+                {todos.map((value, index) => {
+                  return (
+                    <li
+                      className="list-group-item list-group-item-secondary d-flex justify-content-between align-items-center"
+                      key={index}
+                    >
+                      {value}
+                      <span
+                        type="button"
+                        onClick={() => {
+                          deleteTodo(index);
                         }}
-                        >x</span>
+                      >
+                        X
+                      </span>
                     </li>
+                  );
                 })}
-            </ul>
-                <p class= "itemcounter">{todos.length} Items</p>
-        </div>
-    );
-}
-
-export default Todos;
+                <li className="list-group-item list-group-item-secondary d-flex justify-content-between align-items-center">
+                  {todos.length} items left
+                </li>
+              </ul>
+            </div>
+          );
+        };
+        export default Todos;
